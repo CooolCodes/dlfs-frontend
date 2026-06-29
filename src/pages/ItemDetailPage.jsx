@@ -95,7 +95,7 @@ const ItemDetailPage = () => {
           <div style={styles.mainImageBox}>
             {item.images && item.images.length > 0 ? (
               <img
-                src={`http://localhost:5000${item.images[selectedImage].url}`}
+                src={`https://dlfs-backend.onrender.com/api${item.images[selectedImage].url}`}
                 alt={item.title}
                 style={styles.mainImage}
               />
@@ -110,7 +110,7 @@ const ItemDetailPage = () => {
               {item.images.map((img, i) => (
                 <img
                   key={i}
-                  src={`http://localhost:5000${img.url}`}
+                  src={`https://dlfs-backend.onrender.com/api${img.url}`}
                   alt={`View ${i + 1}`}
                   style={{
                     ...styles.thumbnail,
