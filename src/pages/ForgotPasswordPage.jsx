@@ -70,7 +70,7 @@ const ForgotPasswordPage = () => {
                 <input
                   style={styles.input}
                   type="email"
-                  placeholder="190408053@live.unilag.edu.ng"
+                  placeholder="matricno@live.unilag.edu.ng"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
