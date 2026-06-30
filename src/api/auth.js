@@ -1,8 +1,9 @@
-import api from "./axios";
+import api from './axios'
 
-export const registerUser = (data) => api.post("/auth/register", data);
-
-export const loginUser = (data) => api.post("/auth/login", data);
-export const forgotPassword = (data) => api.post("/auth/forgot-password", data);
+export const registerUser = (data) => api.post('/auth/register', data)
+export const loginUser = (data) => api.post('/auth/login', data)
+export const verifyEmail = (token) => api.get(`/auth/verify-email/${token}`)
+export const resendVerification = (data) => api.post('/auth/resend-verification', data)
+export const forgotPassword = (data) => api.post('/auth/forgot-password', data)
 export const resetPassword = (token, data) =>
-  api.post(`/auth/reset-password/${token}`, data);
+  api.post(`/auth/reset-password/${token}`, data)

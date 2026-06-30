@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
 import useWindowWidth from "../hooks/useWindowWidth";
+import { resendVerification } from '../api/auth'
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -13,31 +15,51 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [unverified, setUnverified] = useState(false)
+const [resending, setResending] = useState(false)
+const [resent, setResent] = useState(false)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const res = await loginUser(formData);
-      login(res.data.user, res.data.token);
-      if (res.data.user.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "Login failed. Please try again.",
-      );
-    } finally {
-      setLoading(false);
+  e.preventDefault()
+  setError('')
+  setUnverified(false)
+  setLoading(true)
+
+  try {
+    const res = await loginUser(formData)
+    login(res.data.user, res.data.token)
+    if (res.data.user.role === 'admin') {
+      navigate('/admin')
+    } else {
+      navigate('/')
     }
-  };
+  } catch (err) {
+    if (err.response?.data?.unverified) {
+      setUnverified(true)
+      setError(err.response.data.message)
+    } else {
+      setError(err.response?.data?.message || 'Login failed. Please try again.')
+    }
+  } finally {
+    setLoading(false)
+  }
+}
+
+const handleResend = async () => {
+  setResending(true)
+  try {
+    await resendVerification({ email: formData.email })
+    setResent(true)
+  } catch (err) {
+    // resend always responds generically, so this rarely fires
+  } finally {
+    setResending(false)
+  }
+}
 
   return (
     <div

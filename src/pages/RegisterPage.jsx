@@ -19,38 +19,38 @@ const RegisterPage = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    if (formData.password !== formData.confirmPassword) {
-      return setError("Passwords do not match");
-    }
-    if (formData.password.length < 6) {
-      return setError("Password must be at least 6 characters");
-    }
-    setLoading(true);
-    try {
-      const res = await registerUser({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        studentId: formData.studentId,
-      });
-      login(res.data.user, res.data.token);
-      navigate("/");
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "Registration failed. Please try again.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  setError('')
+
+  if (formData.password !== formData.confirmPassword) {
+    return setError('Passwords do not match')
+  }
+  if (formData.password.length < 6) {
+    return setError('Password must be at least 6 characters')
+  }
+
+  setLoading(true)
+  try {
+    await registerUser({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      studentId: formData.studentId,
+    })
+    setSubmitted(true)
+  } catch (err) {
+    setError(err.response?.data?.message || 'Registration failed. Please try again.')
+  } finally {
+    setLoading(false)
+  }
+}
 
   return (
     <div

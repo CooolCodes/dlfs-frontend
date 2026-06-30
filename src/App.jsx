@@ -4,6 +4,7 @@ import { useAuth } from "./context/AuthContext";
 // Pages
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import VerifyEmailPage from './pages/VerifyEmailPage'
 import HomePage from "./pages/HomePage";
 import ItemDetailPage from "./pages/ItemDetailPage";
 import ReportItemPage from "./pages/ReportItemPage";
@@ -11,6 +12,7 @@ import DashboardPage from "./pages/DashboardPage";
 import AdminPage from "./pages/AdminPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+
 
 // Components
 import Navbar from "./components/Navbar";
@@ -40,6 +42,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
         <Route path="/items/:id" element={<ItemDetailPage />} />
 
         {/* Protected routes */}
