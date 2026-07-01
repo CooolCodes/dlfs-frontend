@@ -4,7 +4,6 @@ import { registerUser } from "../api/auth";
 import useWindowWidth from "../hooks/useWindowWidth";
 
 const RegisterPage = () => {
-  const { login } = useAuth();
   const width = useWindowWidth();
   const isMobile = width < 480;
 
