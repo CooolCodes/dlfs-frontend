@@ -23,15 +23,15 @@ const Navbar = () => {
         <Link to="/" style={styles.logo} onClick={() => setMenuOpen(false)}>
           <span>🔍</span>
           <span>DLFS</span>
-          <span style={styles.logoSub}>UniLag</span>
+          <span style={styles.logoSub}>Unilag</span>
         </Link>
 
         {/* Desktop links */}
         {!isMobile && (
           <div style={styles.links}>
-            <Link to="/" style={styles.link}>
+            {/* <Link to="/" style={styles.link}>
               Browse
-            </Link>
+            </Link> */}
             {user && (
               <>
                 <Link to="/report" style={styles.link}>
@@ -90,13 +90,13 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isMobile && menuOpen && (
         <div style={styles.mobileMenu}>
-          <Link
+          {/* <Link
             to="/"
             style={styles.mobileLink}
             onClick={() => setMenuOpen(false)}
           >
             Browse
-          </Link>
+          </Link> */}
           {user && (
             <>
               <Link

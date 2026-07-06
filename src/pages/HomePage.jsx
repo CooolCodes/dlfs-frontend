@@ -281,7 +281,7 @@ const styles = {
   },
   searchBtn: {
     padding: "0.75rem 1.5rem",
-    backgroundColor: "00786F",
+    backgroundColor: "0A7E8C",
     color: "#ffffff",
     border: "none",
     fontWeight: "600",
