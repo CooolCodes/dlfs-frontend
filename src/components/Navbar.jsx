@@ -29,9 +29,9 @@ const Navbar = () => {
         {/* Desktop links */}
         {!isMobile && (
           <div style={styles.links}>
-            {/* <Link to="/" style={styles.link}>
+            <Link to="/" style={styles.link}>
               Browse
-            </Link> */}
+            </Link>
             {user && (
               <>
                 <Link to="/report" style={styles.link}>
@@ -90,13 +90,13 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isMobile && menuOpen && (
         <div style={styles.mobileMenu}>
-          {/* <Link
+          <Link
             to="/"
             style={styles.mobileLink}
             onClick={() => setMenuOpen(false)}
           >
             Browse
-          </Link> */}
+          </Link>
           {user && (
             <>
               <Link

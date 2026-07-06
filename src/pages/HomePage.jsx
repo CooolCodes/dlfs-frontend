@@ -93,7 +93,7 @@ const HomePage = () => {
           Lost something on campus?
         </h1>
         <p style={styles.heroSub}>
-          Search the UNILAG Lost & Found database or report an item you found.
+          Search the UNILAG Digital Lost & Found database or report an item you found.
         </p>
         <div
           style={{
@@ -281,7 +281,7 @@ const styles = {
   },
   searchBtn: {
     padding: "0.75rem 1.5rem",
-    backgroundColor: "0A7E8C",
+    backgroundColor: "#0A7E8C",
     color: "#ffffff",
     border: "none",
     fontWeight: "600",
