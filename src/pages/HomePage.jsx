@@ -8,7 +8,7 @@ const ItemCard = ({ item }) => (
     <div style={styles.cardImage}>
       {item.images && item.images.length > 0 ? (
         <img
-          src={`https://dlfs-backend.onrender.com/api${item.images[0].url}`}
+          src={item.images[0].url}
           alt={item.title}
           style={styles.img}
         />
