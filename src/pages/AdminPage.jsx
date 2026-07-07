@@ -5,6 +5,7 @@ import {
   getItemsByStatus,
   approveItem,
   rejectItem,
+  revokeItem,
   getClaims,
   approveClaim,
   rejectClaim,
@@ -156,6 +157,28 @@ const AdminPage = () => {
       setActionLoading("");
     }
   };
+
+  const handleRevokeItem = async (id) => {
+  setActionLoading(id + "-revoke");
+  try {
+    await revokeItem(id);
+    setAllItems((prev) => prev.filter((i) => i._id !== id));
+    setStats((prev) =>
+      prev
+        ? {
+            ...prev,
+            approvedItems: prev.approvedItems - 1,
+            pendingItems: prev.pendingItems + 1,
+          }
+        : prev,
+    );
+    showFeedback("Item revoked and returned to pending review.");
+  } catch (err) {
+    showFeedback(err.response?.data?.message || "Failed to revoke item.");
+  } finally {
+    setActionLoading("");
+  }
+};
 
   const handleApproveClaim = async (id) => {
     setActionLoading(id);
@@ -503,85 +526,77 @@ const AdminPage = () => {
 
         {/* All items tab */}
         {tab === "items" && (
-          <div>
-            {/* Status filter */}
-            <div style={styles.statusFilter}>
-              {[
-                "pending",
-                "approved",
-                "matched",
-                "claimed",
-                "recovered",
-                "archived",
-              ].map((s) => (
-                <button
-                  key={s}
-                  style={{
-                    ...styles.filterChip,
-                    backgroundColor:
-                      allItemsStatus === s ? "#0D1B2A" : "#ffffff",
-                    color: allItemsStatus === s ? "#ffffff" : "#64748b",
-                    border:
-                      allItemsStatus === s
-                        ? "1px solid #0D1B2A"
-                        : "1px solid #e2e8f0",
-                  }}
-                  onClick={() => {
-                    setAllItemsStatus(s);
-                    fetchAllItems(s);
-                  }}
-                >
-                  {s}
-                </button>
-              ))}
+  <div>
+    <div style={styles.statusFilter}>
+      {["pending", "approved", "matched", "claimed", "recovered", "archived"].map((s) => (
+        <button
+          key={s}
+          style={{
+            ...styles.filterChip,
+            backgroundColor: allItemsStatus === s ? "#0D1B2A" : "#ffffff",
+            color: allItemsStatus === s ? "#ffffff" : "#64748b",
+            border: allItemsStatus === s ? "1px solid #0D1B2A" : "1px solid #e2e8f0",
+          }}
+          onClick={() => { setAllItemsStatus(s); fetchAllItems(s); }}
+        >
+          {s}
+        </button>
+      ))}
+    </div>
+
+    {loading ? (
+      <div style={styles.center}>Loading items...</div>
+    ) : allItems.length === 0 ? (
+      <div style={styles.empty}>No items with status: {allItemsStatus}</div>
+    ) : (
+      <div style={styles.list}>
+        {allItems.map((item) => (
+          <div key={item._id} style={styles.reviewCard}>
+            <div style={styles.reviewTitleRow}>
+              <span style={styles.reviewItemTitle}>{item.title}</span>
+              <StatusBadge status={item.status} />
+            </div>
+            <div style={{ ...styles.reviewMeta, marginBottom: "0.75rem" }}>
+              <span
+                style={{
+                  color: item.type === "lost" ? "#b91c1c" : "#15803d",
+                  fontWeight: "600",
+                  textTransform: "capitalize",
+                  fontSize: "0.8rem",
+                }}
+              >
+                {item.type}
+              </span>
+              <span style={styles.dot}>·</span>
+              <span>{item.category}</span>
+              <span style={styles.dot}>·</span>
+              <span>{item.location}</span>
+              <span style={styles.dot}>·</span>
+              <span>{new Date(item.createdAt).toLocaleDateString("en-GB")}</span>
             </div>
 
-            {loading ? (
-              <div style={styles.center}>Loading items...</div>
-            ) : allItems.length === 0 ? (
-              <div style={styles.empty}>
-                No items with status: {allItemsStatus}
-              </div>
-            ) : (
-              <div style={styles.list}>
-                {allItems.map((item) => (
-                  <Link
-                    key={item._id}
-                    to={`/items/${item._id}`}
-                    style={styles.simpleRow}
-                  >
-                    <div style={styles.simpleInfo}>
-                      <div style={styles.reviewTitleRow}>
-                        <span style={styles.reviewItemTitle}>{item.title}</span>
-                        <StatusBadge status={item.status} />
-                      </div>
-                      <div style={styles.reviewMeta}>
-                        <span
-                          style={{
-                            color: item.type === "lost" ? "#b91c1c" : "#15803d",
-                            fontWeight: "600",
-                            textTransform: "capitalize",
-                            fontSize: "0.8rem",
-                          }}
-                        >
-                          {item.type}
-                        </span>
-                        <span style={styles.dot}>·</span>
-                        <span>{item.category}</span>
-                        <span style={styles.dot}>·</span>
-                        <span>{item.location}</span>
-                        <span style={styles.dot}>·</span>
-                        <span>
-                          {new Date(item.createdAt).toLocaleDateString("en-GB")}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
+            <div style={styles.reviewActions}>
+              <Link to={`/items/${item._id}`} style={styles.viewBtn} target="_blank">
+                View →
+              </Link>
+              {item.status === "approved" && (
+                <button
+                  style={styles.revokeBtn}
+                  onClick={() => handleRevokeItem(item._id)}
+                  disabled={actionLoading === item._id + "-revoke"}
+                >
+                  {actionLoading === item._id + "-revoke"
+                    ? "Revoking..."
+                    : "↩ Revoke approval"}
+                </button>
+              )}
+            </div>
           </div>
-        )}
+        ))}
+      </div>
+    )}
+  </div>
+)}
       </div>
     </div>
   );
@@ -776,6 +791,16 @@ const styles = {
     fontSize: "0.875rem",
     fontWeight: "600",
   },
+  revokeBtn: {
+  padding: "0.55rem 1.25rem",
+  backgroundColor: "transparent",
+  color: "#d97706",
+  border: "1px solid #fde68a",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontSize: "0.875rem",
+  fontWeight: "600",
+},
   viewBtn: {
     padding: "0.55rem 1rem",
     backgroundColor: "#f1f5f9",

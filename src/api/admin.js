@@ -22,5 +22,8 @@ export const approveClaim = (id) => api.patch(`/admin/claims/${id}/approve`);
 export const rejectClaim = (id, reason) =>
   api.patch(`/admin/claims/${id}/reject`, { reason });
 
+//Revoke an item
+export const revokeItem = (id) => api.patch(`/admin/items/${id}/revoke`);
+
 // Get dashboard stats
 export const getStats = () => api.get("/admin/stats");
